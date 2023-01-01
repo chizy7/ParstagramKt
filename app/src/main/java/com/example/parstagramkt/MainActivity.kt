@@ -13,6 +13,10 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.content.FileProvider
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import com.example.parstagramkt.fragments.ComposeFragment
+import com.example.parstagramkt.fragments.FeedFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.parse.*
 import java.io.File
@@ -26,27 +30,37 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val fragmentManager: FragmentManager = supportFragmentManager
+
         findViewById<BottomNavigationView>(R.id.bottom_navigation).setOnItemSelectedListener {
             item ->
 
+            var fragmentToShow: Fragment? = null
             when (item.itemId) {
 
                 R.id.action_home -> {
-                    // TODO: Navigate to the home screen
-                    Toast.makeText(this, "Home", Toast.LENGTH_SHORT).show()
+                    // TODO: Navigate to the home screen / feed fragment
+                    fragmentToShow = FeedFragment()
+                    //Toast.makeText(this, "Home", Toast.LENGTH_SHORT).show()
                 }
                 R.id.action_compose -> {
-                    // TODO: Navigate to the compose screen
-                    Toast.makeText(this, "Compose", Toast.LENGTH_SHORT).show()
+                    fragmentToShow = ComposeFragment()
                 }
                 R.id.action_profile -> {
                     // TODO: Navigate to the Profile screen
                     Toast.makeText(this, "Profile", Toast.LENGTH_SHORT).show()
                 }
             }
+
+            if (fragmentToShow != null) {
+                fragmentManager.beginTransaction().replace(R.id.flContainer, fragmentToShow).commit()
+            }
             // Return true to say that we've handled this user interaction on the item
             true
         }
+
+        // Set default selection
+        findViewById<BottomNavigationView>(R.id.bottom_navigation).selectedItemId = R.id.action_home
 
         queryPosts()
     }
